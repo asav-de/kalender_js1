@@ -1,0 +1,62 @@
+body {
+  background-color: #f0faf7;
+  max-width: 1000px;
+  margin: 0 auto;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+.titel {
+  text-align: center;
+}
+
+p.description {
+  text-indent: 2em;
+}
+
+.today {
+  border: 1px solid red;
+  background-color: yellow;
+  border-radius: 30%;
+  width: 1.2em;
+  height: 1.2em;
+  text-align: center;
+}
+
+table {
+  width: 30%;
+  table-layout: fixed;
+  border: 1px solid #a3d9c9;
+  background-color: #ffffff;
+  border-radius: 3%;
+  flex-shrink: 0;
+  min-width: 250px;
+}
+
+td, th {
+  height: 30px;
+  border-bottom: 1px solid black;
+  text-align: center;
+  transition: background-color 0.2s ease;
+}
+
+td:hover, th:hover {
+  background-color: #d0f0e0;
+}
+
+.Sa {
+  color: blue;
+}
+
+.So {
+  color: red;
+}
+
+.table-wrapper {
+  display: flex;
+}
+
+.text-column{
+  min-width: 0;
+}
+.text-column h3{
+  text-indent: 2em;
+}
