@@ -9,9 +9,9 @@
         <h1 class="titel">Kalenderblatt vom :...</h1>
 
         <p class="description">
-            Der 26. Juli 2026 ist ein Sonntag und zwar der vierte Sonntag im Monat Juli des Jahres 2026.
-            Es handelt sich um den 207. Tag des Jahres, was bedeutet, dass es noch 158 Tage bis zum Jahresende sind. 
-            Der Monat Juli hat insgesamt 31 Tage. Heute ist kein gesetzlicher Feiertag in Deutschland.
+            Der <span data-slot="currentFullDate"></span> ist ein <span data-slot="currentDay"></span> und zwar der <span data-slot="numberOfTheWeek"></span> <span data-slot="currentWeekDay"></span> im Monat <span data-slot="currentMonth"></span> des Jahres <span data-slot="currentYear"></span>.
+            Es handelt sich um den <span data-slot="dayOfYear"></span>. Tag des Jahres, was bedeutet, dass es noch <span data-slot="remainingDays"></span> Tage bis zum Jahresende sind. 
+            Der Monat <span data-slot="currentMonth"></span> hat insgesamt <span data-slot="daysInMonth"></span> Tage. Heute ist <span data-slot="pointer"></span> gesetzlicher Feiertag in Deutschland.
         </p>
         <div class="table-wrapper">
             <table>
