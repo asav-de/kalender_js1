@@ -1,6 +1,7 @@
 body {
   background-color: #f0faf7;
-  max-width: 1000px;
+  max-width: 960px;
+  min-width: 960px;
   margin: 0 auto;
   font-family: Georgia, 'Times New Roman', serif;
 }
@@ -52,6 +53,7 @@ td:hover, th:hover {
 
 .table-wrapper {
   display: flex;
+  align-items: flex-start;
 }
 
 .text-column{
