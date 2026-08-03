@@ -14,9 +14,10 @@ p.description {
 }
 
 .today {
-  border: 1px solid red;
-  background-color: yellow;
-  border-radius: 30%;
+  border: 1px solid #1e9de6;
+  background-color: AccentColor;
+  color: AccentColorText;
+  border-radius: 48%;
   width: 1.2em;
   height: 1.2em;
   text-align: center;

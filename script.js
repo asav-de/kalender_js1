@@ -18,6 +18,7 @@ headingH3.textContent = (`Historische Ereignisse am ${currentDay + ". " + curren
 const feiertage = new Set([
   "1-1",    // Neujahr
   "5-1",    // Tag der Arbeit
+  "6-8",    // Andre’s Geburtstag
   "10-3",   // Tag der Deutschen Einheit
   "12-25",  // 1. Weihnachtstag
   "12-26",  // 2. Weihnachtstag
