@@ -2,15 +2,22 @@ const today = new Date();
 
 console.log('Hallo!')
 
+const year = today.getFullYear();
+const numberOfMonth = today.getMonth();
+const numberOfDay = new Date(year, numberOfMonth, 1).getDay();
+const daysMonthTotal = new Date(year, numberOfMonth + 1, 0).getDate();
+const daysPrevMonth = new Date(year, numberOfMonth, 0).getDate();
+
+
 const currentFullDate = today.toLocaleDateString("de", { day: "numeric", month: "long", year: "numeric" });
 const currentMonth = today.toLocaleString("de", {month: "long" });
-const currentYear = today.toLocaleDateString("de", {year: "numeric"});
 const currentWeekday = today.toLocaleString("de", { weekday: "long" });
 const currentDay = today.toLocaleDateString("de", {day: "numeric"});
 const weekdayNumberInMonth = Math.ceil(today.getDate() / 7);
 
+
 const headingH1 = document.querySelector('.titel');
-headingH1.textContent = `Kalenderblatt vom ${currentFullDate}`;
+headingH1.innerHTML = `Kalenderblatt vom <wbr><span class="datum-nowrap">${currentFullDate}</span>`;
 document.title = `Kalender vom ${currentFullDate}`; //Der Titel (angezeigt im Browser-Tab)
 const headingH3 = document.querySelector('.HE');
 headingH3.textContent = (`Historische Ereignisse am ${currentDay + ". " + currentMonth}`);
@@ -30,13 +37,64 @@ function isFeiertag(d) {
 
 const pointer = isFeiertag(today) ? "ein" : "kein";
 
-document.querySelector('[data-slot="currentFullDate"]').textContent = currentFullDate;
-const items = document.querySelectorAll('[data-slot="currentWeekDay"]'); // get all of "currentWeekDay" in Text
-items.forEach(el => {
-  el.textContent = currentWeekday;
-});
-document.querySelector('[data-slot="weekdayNumberInMonth"]').textContent = weekdayNumberInMonth;
-document.querySelector('[data-slot="currentMonth"]').textContent = currentMonth;
-document.querySelector('[data-slot="currentYear"]').textContent = currentYear;
-document.querySelector('[data-slot="pointer"]').textContent = pointer;
+function fillSlots(slot) {
+  for (const [key, value] of Object.entries(slot)) {
+    if (key === 'currentWeekday') {
+      listOfEl = document.querySelectorAll(`[data-slot="${key}"]`);
+      listOfEl.forEach(element => {
+        element.textContent = value;
+      });
+      continue;
+    }
+    document.querySelector(`[data-slot="${key}"]`).textContent = value;
+  }
+}
+
+const slots = {
+  currentFullDate: currentFullDate,
+  currentWeekday: currentWeekday,
+  weekdayNumberInMonth: weekdayNumberInMonth,
+  currentMonth: currentMonth,
+  currentYear: year,
+  pointer: pointer
+}
+
+fillSlots(slots);
+let newRow;
+const table = document.querySelector("table");
+let prevMonthDays = daysPrevMonth;
+prevMonthDays -= (numberOfDay + 6) % 7;
+
+
+let j = 1;
+
+for (let i = prevMonthDays + 1; i <= daysPrevMonth; i++) {
+  if ((j - 1) % 7 === 0) {
+    newRow = document.createElement("tr");  
+    table.appendChild(newRow);               
+  }
+  const td = document.createElement("td");
+  td.textContent = i;
+  newRow.appendChild(td); 
+  j++;
+}
+
+for (let i = 1; i <= daysMonthTotal; i++) {
+  if ((j - 1) % 7 === 0) {
+    newRow = document.createElement("tr");  
+    table.appendChild(newRow);               
+  }
+  const td = document.createElement("td");
+  td.textContent = i;
+  newRow.appendChild(td);
+  j++;
+}
+
+for (let i = 1; ((j - 1) % 7 !== 0); i++) {             
+  const td = document.createElement("td");
+  td.textContent = i;
+  newRow.appendChild(td);
+  j++;
+}
+
 
