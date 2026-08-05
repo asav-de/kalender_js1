@@ -1,13 +1,23 @@
+html {
+  background-image: url("image/img102.jpg");
+  background-size: cover;       /* füllt den ganzen Bereich, behält Seitenverhältnis */
+  background-position: center;  /* zentriert das Bild */
+  background-repeat: no-repeat; /* verhindert Kachelung/Wiederholung */
+  min-height: 100vh;
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
-  background-color: #f0faf7;
+  background-color: rgba(240, 250, 247, 0.4);
   max-width: 960px;
   min-width: 960px;
-  margin: 0 auto;
+  margin: auto;
+  border-radius: 15px;
   font-family: Georgia, 'Times New Roman', serif;
+  padding: 30px 30px;
 }
 
 @media (max-width: 1000px) {
@@ -15,12 +25,21 @@ body {
     max-width: 700px;
     min-width: 700px;  /* kleinere feste Breite für schmalere Fenster */
   }
+
+
 }
 
 @media (max-width: 750px) {
   body {
     max-width: 400px;
     min-width: 400px;  /* noch kleiner für Handys */
+  }
+  .table-wrapper {
+  flex-direction: column;
+  align-items: center;
+  }
+  .text-column {
+  margin-right: 20px;
   }
 }
 
@@ -29,15 +48,26 @@ body {
 }
 
 p.description {
-  text-indent: 2em;
+  text-indent: 1em;
   text-align: center;
+  padding-left: 5px;
+}
+
+.datum-nowrap {
+  white-space: nowrap;
+}
+
+.table-wrapper {
+  
+  display: flex;
+  align-items: center;
 }
 
 .today {
   position: relative;
   top: -1px;
-  border: 1px solid rgb(0, 136, 255);
-  background-color: rgb(0, 229, 255);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  background-color: rgba(0, 200, 220, 0.75);
   border-radius: 10%;
   text-align: center;
   position: relative;
@@ -46,23 +76,23 @@ p.description {
 table {
   table-layout: fixed; /* Forces equal column widths instead of sizing by content */
   width: 30%;
-  border: 1px solid #a3d9c9;
-  background-color: #ffffff;
+  border: 1px solid rgba(230, 170, 130, 0.5);
+  background-color: rgba(255, 255, 255, 0.75);
   border-radius: 3%;
   min-width: 250px;
 }
 
 td, th {
   height: 35px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid rgba(90, 70, 60, 0.25);
   text-align: center;
   transition: background-color 0.2s ease;
 }
 
 td:hover, th:hover {
-  background-color: rgb(0, 136, 255);
+  background-color: rgba(255, 170, 100, 0.55);
   position: relative;
-  border: 1px solid rgb(0, 136, 255);
+  border: 1px solid rgba(255, 170, 100, 0.8);
   border-radius: 10%;
   top: -1px;
 }
@@ -79,15 +109,18 @@ tr:last-child td {
   color: red;
 }
 
-.table-wrapper {
-  display: flex;
-  align-items: center;
-}
-
 .text-column{
   text-align: justify;
+  align-self: stretch;
   min-width: 0;
 }
+
+.text-column ul {
+  padding-left: 20px;
+}
+
+
 .text-column h3{
   text-indent: 2em;
+  text-align: center;
 }
