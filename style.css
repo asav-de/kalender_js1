@@ -1,9 +1,10 @@
 html {
-  background-image: url("image/img102.jpg");
+  background-image: url("image/pexels-grizzlybear-1237132.jpg");
   background-size: cover;       /* füllt den ganzen Bereich, behält Seitenverhältnis */
   background-position: center;  /* zentriert das Bild */
   background-repeat: no-repeat; /* verhindert Kachelung/Wiederholung */
   min-height: 100vh;
+  background-attachment: fixed;
 }
 
 * {

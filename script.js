@@ -1,19 +1,22 @@
 const today = new Date();
 
-console.log('Hallo!')
-
 const year = today.getFullYear();
-const curMonth = today.getMonth();
-const curDay = new Date(year, curMonth, 1).getDay();
-const daysMonthTotal = new Date(year, curMonth + 1, 0).getDate();
-const daysPrevMonth = new Date(year, curMonth, 0).getDate();
+const numberMonth = today.getMonth();
+const numberDay = new Date(year, numberMonth, 1).getDay();
+const quantityDaysMonthTotal = new Date(year, numberMonth + 1, 0).getDate();
+const quantityDaysPrevMonth = new Date(year, numberMonth, 0).getDate();
+const nextMidnight = new Date(year, numberMonth, today.getDate() + 1);
+const mSecondUntilNextDay = nextMidnight - today;
 
+setTimeout(() => {
+  location.reload();
+}, mSecondUntilNextDay);
 
 const currentFullDate = today.toLocaleDateString("de", { day: "numeric", month: "long", year: "numeric" });
 const currentMonth = today.toLocaleString("de", {month: "long" });
 const currentWeekday = today.toLocaleString("de", {weekday: "long" });
 const currentDay = today.toLocaleDateString("de", {day: "numeric"});
-const weekdayNumberInMonth = Math.ceil(today.getDate() / 7);
+const numberWeekdayOfMonth = Math.ceil(today.getDate() / 7);
 
 
 const headingH1 = document.querySelector('.titel');
@@ -37,7 +40,7 @@ function isFeiertag(d) {
 
 const pointer = isFeiertag(today) ? "ein" : "kein";
 
-function fillSlots(slot) {
+function fillTextSlots(slot) {
   for (const [key, value] of Object.entries(slot)) {
     if (key === 'currentWeekday') {
       listOfEl = document.querySelectorAll(`[data-slot="${key}"]`);
@@ -50,51 +53,74 @@ function fillSlots(slot) {
   }
 }
 
-const slots = {
+const textSlots = {
   currentFullDate: currentFullDate,
   currentWeekday: currentWeekday,
-  weekdayNumberInMonth: weekdayNumberInMonth,
+  numberWeekdayOfMonth: numberWeekdayOfMonth,
   currentMonth: currentMonth,
   currentYear: year,
   pointer: pointer
 }
 
-fillSlots(slots);
+fillTextSlots(textSlots);
+
 let newRow;
 const table = document.querySelector("table");
-let prevMonthDays = daysPrevMonth;
-prevMonthDays -= (curDay + 6) % 7;
+let firstVisibleDayPrevMonth = quantityDaysPrevMonth;
+firstVisibleDayPrevMonth -= (numberDay + 6) % 7;
 
+function isNewRowNeeded() {
+  return (cellCounter - 1) % 7 === 0;
+}
 
-let j = 1;
-
-for (let i = prevMonthDays + 1; i <= daysPrevMonth; i++) {
-  if ((j - 1) % 7 === 0) {
+function drawRow() {
     newRow = document.createElement("tr");  
-    table.appendChild(newRow);               
+    table.appendChild(newRow);  
+}
+
+let cellCounter = 1;
+
+function drawCell(i) {
+  const day = new Date(year, numberMonth, i);
+  const newCell = document.createElement("td");
+  newCell.textContent = i;
+  if (Number(currentDay) === i) {
+  newCell.classList.add('today');
   }
-  const td = document.createElement("td");
-  td.textContent = i;
-  newRow.appendChild(td); 
-  j++;
-}
-
-for (let i = 1; i <= daysMonthTotal; i++) {
-  if ((j - 1) % 7 === 0) {
-    newRow = document.createElement("tr");  
-    table.appendChild(newRow);               
+  if ((cellCounter % 7 === 0) || (isFeiertag(day))) {
+    newCell.classList.add('So');
+  } 
+  if (cellCounter % 7 === 6 ) {
+    newCell.classList.add('Sa');
   }
-  const td = document.createElement("td");
-  td.textContent = i;
-  newRow.appendChild(td);
-  j++;
+  newRow.appendChild(newCell);
+  cellCounter++;
 }
 
-for (let i = 1; ((j - 1) % 7 !== 0); i++) {             
-  const td = document.createElement("td");
-  td.textContent = i;
-  newRow.appendChild(td);
-  j++;
+function renderPrevMonthTail() {
+  for (let i = firstVisibleDayPrevMonth + 1; i <= quantityDaysPrevMonth; i++) {
+    if (isNewRowNeeded()) {
+      drawRow();               
+    }
+    drawCell(i);
+  }
 }
 
+function renderCurrentMonth() {
+  for (let i = 1; i <= quantityDaysMonthTotal; i++) {
+  if (isNewRowNeeded()) {
+    drawRow();               
+  }
+  drawCell(i);
+  }
+}
 
+function renderNextMonthLead() {
+  for (let i = 1; (!isNewRowNeeded()); i++) {             
+  drawCell(i);
+  }
+}
+
+renderPrevMonthTail();
+renderCurrentMonth();
+renderNextMonthLead();
