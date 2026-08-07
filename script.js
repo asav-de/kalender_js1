@@ -62,7 +62,7 @@ const textSlots = {
   pointer: pointer
 }
 
-fillTextSlots(textSlots);
+fillTextSlots(textSlots); 
 
 let newRow;
 const table = document.querySelector("table");

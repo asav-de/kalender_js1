@@ -13,8 +13,7 @@ html {
 
 body {
   background-color: rgba(240, 250, 247, 0.4);
-  max-width: 960px;
-  min-width: 960px;
+  width: min(960px, 100%);
   margin: auto;
   border-radius: 15px;
   font-family: Georgia, 'Times New Roman', serif;
@@ -24,7 +23,8 @@ body {
 @media (max-width: 1000px) {
   body {
     max-width: 700px;
-    min-width: 700px;  /* kleinere feste Breite für schmalere Fenster */
+    min-width: 700px;
+    min-height: 900px;  /* kleinere feste Breite für schmalere Fenster */
   }
 
 
@@ -34,6 +34,7 @@ body {
   body {
     max-width: 400px;
     min-width: 400px;  /* noch kleiner für Handys */
+    min-height: 1000px;
   }
   .table-wrapper {
   flex-direction: column;
@@ -49,7 +50,6 @@ body {
 }
 
 p.description {
-  text-indent: 1em;
   text-align: center;
   padding-left: 5px;
 }
