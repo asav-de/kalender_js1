@@ -3,15 +3,15 @@ const today = new Date();
 console.log('Hallo!')
 
 const year = today.getFullYear();
-const numberOfMonth = today.getMonth();
-const numberOfDay = new Date(year, numberOfMonth, 1).getDay();
-const daysMonthTotal = new Date(year, numberOfMonth + 1, 0).getDate();
-const daysPrevMonth = new Date(year, numberOfMonth, 0).getDate();
+const curMonth = today.getMonth();
+const curDay = new Date(year, curMonth, 1).getDay();
+const daysMonthTotal = new Date(year, curMonth + 1, 0).getDate();
+const daysPrevMonth = new Date(year, curMonth, 0).getDate();
 
 
 const currentFullDate = today.toLocaleDateString("de", { day: "numeric", month: "long", year: "numeric" });
 const currentMonth = today.toLocaleString("de", {month: "long" });
-const currentWeekday = today.toLocaleString("de", { weekday: "long" });
+const currentWeekday = today.toLocaleString("de", {weekday: "long" });
 const currentDay = today.toLocaleDateString("de", {day: "numeric"});
 const weekdayNumberInMonth = Math.ceil(today.getDate() / 7);
 
@@ -63,7 +63,7 @@ fillSlots(slots);
 let newRow;
 const table = document.querySelector("table");
 let prevMonthDays = daysPrevMonth;
-prevMonthDays -= (numberOfDay + 6) % 7;
+prevMonthDays -= (curDay + 6) % 7;
 
 
 let j = 1;
