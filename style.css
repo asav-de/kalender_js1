@@ -24,8 +24,9 @@ body {
   body {
     max-width: 700px;
     min-width: 700px;
-    min-height: 900px;  /* kleinere feste Breite für schmalere Fenster */
+    min-height: 700px;  /* kleinere feste Breite für schmalere Fenster */
   }
+  table { height: 400px; }
 
 
 }
@@ -34,12 +35,14 @@ body {
   body {
     max-width: 400px;
     min-width: 400px;  /* noch kleiner für Handys */
-    min-height: 1000px;
+    min-height: 700px;
   }
   .table-wrapper {
-  flex-direction: column;
-  align-items: center;
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
   }
+  table { height: 320px; }
   .text-column {
   margin-right: 20px;
   }
@@ -47,11 +50,13 @@ body {
 
 .titel {
   text-align: center;
+  font-size: xx-large;
 }
 
 p.description {
   text-align: center;
   padding-left: 5px;
+  font-size: x-large;
 }
 
 .datum-nowrap {
@@ -59,8 +64,8 @@ p.description {
 }
 
 .table-wrapper {
-  
-  display: flex;
+  display: flex; 
+  flex-direction: column;
   align-items: center;
 }
 
@@ -75,16 +80,22 @@ p.description {
 }
 
 table {
+  font-size: x-large;
+  text-align: center;
   table-layout: fixed; /* Forces equal column widths instead of sizing by content */
-  width: 30%;
+  width: 80%;
+  aspect-ratio: 7 / 6;
+  flex-shrink: 0; 
   border: 1px solid rgba(230, 170, 130, 0.5);
   background-color: rgba(255, 255, 255, 0.75);
   border-radius: 3%;
-  min-width: 250px;
+  min-width: 350px;
 }
 
 td, th {
-  height: 35px;
+  height: auto;
+  padding: 4px 0;
+  border: 1px solid transparent;    
   border-bottom: 1px solid rgba(90, 70, 60, 0.25);
   text-align: center;
   transition: background-color 0.2s ease;
@@ -95,7 +106,6 @@ td:hover, th:hover {
   position: relative;
   border: 1px solid rgba(255, 170, 100, 0.8);
   border-radius: 10%;
-  top: -1px;
 }
 
 tr:last-child td {
@@ -124,4 +134,12 @@ tr:last-child td {
 .text-column h3{
   text-indent: 2em;
   text-align: center;
+}
+
+.HE {
+  font-size: xx-large;
+}
+
+.text-column li {
+  font-size: x-large;
 }

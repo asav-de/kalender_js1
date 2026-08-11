@@ -30,7 +30,7 @@ const feiertage = new Set([
   "5-1",    // Tag der Arbeit
   "10-3",   // Tag der Deutschen Einheit
   "12-25",  // 1. Weihnachtstag
-  "12-26",  // 2. Weihnachtstag
+  "12-26", // 2. Weihnachtstag
 ]);
 
 function isFeiertag(d) {
@@ -124,3 +124,50 @@ function renderNextMonthLead() {
 renderPrevMonthTail();
 renderCurrentMonth();
 renderNextMonthLead();
+
+//https://history.muffinlabs.com/
+
+async function ladeHistorischeEreignisse () {
+  try {
+
+    const today = new Date();
+
+    const response = await fetch(
+      `https://history.muffinlabs.com/date/${today.getMonth() + 1}/${today.getDate()}`,
+      {
+        headers: {
+          'Accept': 'application/json'
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP-Error: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    console.log(data);
+
+    return data;
+
+  } catch (error) {
+    console.error(`Fehler beim Laden:`, error);
+  }
+}
+
+ladeHistorischeEreignisse()
+  .then(ereignisse => {
+  document.querySelector(".date").textContent = ereignisse.date;
+
+  const events = ereignisse.data.Events.slice(-5);
+
+  document.querySelector(".text-column ul").innerHTML = 
+  events
+    .map(event => `<li>${event.year}: ${event.text}</li>`)
+    .join("");
+})
+  .catch(error => {
+    console.error("Fehler:", error);
+  });
+
