@@ -1,5 +1,6 @@
 const today = new Date();
 
+// Date parts used to build the calendar grid
 const year = today.getFullYear();
 const numberMonth = today.getMonth();
 const numberDay = new Date(year, numberMonth, 1).getDay();
@@ -8,6 +9,7 @@ const quantityDaysPrevMonth = new Date(year, numberMonth, 0).getDate();
 const nextMidnight = new Date(year, numberMonth, today.getDate() + 1);
 const mSecondUntilNextDay = nextMidnight - today;
 
+// Reload the page at midnight so the calendar updates to the new day
 setTimeout(() => {
   location.reload();
 }, mSecondUntilNextDay);
@@ -25,6 +27,7 @@ document.title = `Kalender vom ${currentFullDate}`; //Der Titel (angezeigt im Br
 const headingH3 = document.querySelector('.HE');
 headingH3.textContent = (`Historische Ereignisse am ${currentDay + ". " + currentMonth}`);
 
+// German public holidays as "month-day" keys
 const feiertage = new Set([
   "1-1",    // Neujahr
   "5-1",    // Tag der Arbeit
@@ -33,6 +36,7 @@ const feiertage = new Set([
   "12-26", // 2. Weihnachtstag
 ]);
 
+// Checks whether a given date is in the holidays set
 function isFeiertag(d) {
   const key = `${d.getMonth() + 1}-${d.getDate()}`;
   return feiertage.has(key);
@@ -40,6 +44,7 @@ function isFeiertag(d) {
 
 const pointer = isFeiertag(today) ? "ein" : "kein";
 
+// Writes each value into the element matching its data-slot attribute
 function fillTextSlots(slot) {
   for (const [key, value] of Object.entries(slot)) {
     if (key === 'currentWeekday') {
@@ -69,17 +74,20 @@ const table = document.querySelector("table");
 let firstVisibleDayPrevMonth = quantityDaysPrevMonth;
 firstVisibleDayPrevMonth -= (numberDay + 6) % 7;
 
+// True at the start of each new week (every 7th cell)
 function isNewRowNeeded() {
   return (cellCounter - 1) % 7 === 0;
 }
 
+// Creates a new table row and appends it to the table
 function drawRow() {
-    newRow = document.createElement("tr");  
-    table.appendChild(newRow);  
+    newRow = document.createElement("tr");
+    table.appendChild(newRow);
 }
 
 let cellCounter = 1;
 
+// Creates a single day cell and appends it to the current row
 function drawCell(i) {
   const day = new Date(year, numberMonth, i);
   const newCell = document.createElement("td");
@@ -97,6 +105,7 @@ function drawCell(i) {
   cellCounter++;
 }
 
+// Renders trailing days from the previous month
 function renderPrevMonthTail() {
   for (let i = firstVisibleDayPrevMonth + 1; i <= quantityDaysPrevMonth; i++) {
     if (isNewRowNeeded()) {
@@ -106,6 +115,7 @@ function renderPrevMonthTail() {
   }
 }
 
+// Renders all days of the current month
 function renderCurrentMonth() {
   for (let i = 1; i <= quantityDaysMonthTotal; i++) {
   if (isNewRowNeeded()) {
@@ -115,6 +125,7 @@ function renderCurrentMonth() {
   }
 }
 
+// Renders leading days from the next month to fill the last row
 function renderNextMonthLead() {
   for (let i = 1; (!isNewRowNeeded()); i++) {             
   drawCell(i);
@@ -125,49 +136,36 @@ renderPrevMonthTail();
 renderCurrentMonth();
 renderNextMonthLead();
 
-//https://history.muffinlabs.com/
+// Fetches today's historical events from https://history.muffinlabs.com/
+async function ladeHistorischeEreignisse() {
+  const heute = new Date();
+  const url = `https://history.muffinlabs.com/date/${heute.getMonth() + 1}/${heute.getDate()}`;
 
-async function ladeHistorischeEreignisse () {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`HTTP-Error: ${response.status}`);
+
+  return response.json();
+}
+
+// Displays the last 5 fetched historical events in the list
+async function renderHistorischeEreignisse() {
   try {
+    const { date, data } = await ladeHistorischeEreignisse();
 
-    const today = new Date();
+    document.querySelector(".date").textContent = date;
 
-    const response = await fetch(
-      `https://history.muffinlabs.com/date/${today.getMonth() + 1}/${today.getDate()}`,
-      {
-        headers: {
-          'Accept': 'application/json'
-        }
-      }
+    const liste = document.querySelector(".text-column ul");
+    liste.replaceChildren(
+      ...data.Events.slice(-5).map(({ year, text }) => {
+        const li = document.createElement("li");
+        li.textContent = `${year}: ${text}`;
+        return li;
+      })
     );
-
-    if (!response.ok) {
-      throw new Error(`HTTP-Error: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    console.log(data);
-
-    return data;
-
   } catch (error) {
-    console.error(`Fehler beim Laden:`, error);
+    console.error("Fehler:", error);
   }
 }
 
-ladeHistorischeEreignisse()
-  .then(ereignisse => {
-  document.querySelector(".date").textContent = ereignisse.date;
-
-  const events = ereignisse.data.Events.slice(-5);
-
-  document.querySelector(".text-column ul").innerHTML = 
-  events
-    .map(event => `<li>${event.year}: ${event.text}</li>`)
-    .join("");
-})
-  .catch(error => {
-    console.error("Fehler:", error);
-  });
+renderHistorischeEreignisse();
 
