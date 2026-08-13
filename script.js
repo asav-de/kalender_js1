@@ -156,12 +156,16 @@ async function renderHistorischeEreignisse() {
 
     const liste = document.querySelector(".text-column ul");
     liste.replaceChildren(
-      ...data.Events.slice(-5).map(({ year, text }) => {
+      ...[...data.Events]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 5)
+        .map(({ year, text }) => {
         const li = document.createElement("li");
         li.textContent = `${year}: ${text}`;
         return li;
       })
     );
+
   } catch (error) {
     console.error("Fehler:", error);
   }
