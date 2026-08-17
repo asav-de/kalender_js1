@@ -72,7 +72,7 @@ fillTextSlots(textSlots);
 let newRow;
 const table = document.querySelector("table");
 let firstVisibleDayPrevMonth = quantityDaysPrevMonth;
-firstVisibleDayPrevMonth -= (numberDay + 6) % 7;
+firstVisibleDayPrevMonth -= (numberDay + 5) % 7;
 
 // True at the start of each new week (every 7th cell)
 function isNewRowNeeded() {
@@ -107,7 +107,7 @@ function drawCell(i) {
 
 // Renders trailing days from the previous month
 function renderPrevMonthTail() {
-  for (let i = firstVisibleDayPrevMonth + 1; i <= quantityDaysPrevMonth; i++) {
+  for (let i = firstVisibleDayPrevMonth; i <= quantityDaysPrevMonth; i++) {
     if (isNewRowNeeded()) {
       drawRow();               
     }
@@ -132,9 +132,13 @@ function renderNextMonthLead() {
   }
 }
 
-renderPrevMonthTail();
-renderCurrentMonth();
-renderNextMonthLead();
+function renderCalender() {
+  renderPrevMonthTail();
+  renderCurrentMonth();
+  renderNextMonthLead();
+}
+
+renderCalender();
 
 // Fetches today's historical events from https://history.muffinlabs.com/
 async function ladeHistorischeEreignisse() {
