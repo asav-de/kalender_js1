@@ -17,22 +17,27 @@
             </span> gesetzlicher Feiertag.
         </p>
         <div class="table-wrapper">
-            <div class="header">
-            <button class="button" id="prev">prev</button>
-            <h2 class="currentMonth"></h2>
-            <button class="button" id="next">next</button>
+            <div class="calendar-frame">
+                <div class="header">
+                    <button class="button nav-btn" id="prev">&lt;</button>
+                    <h2 class="currentMonth"></h2>
+                    <button class="button nav-btn" id="next">&gt;</button>
+                </div>
+                <table class="table" id="calendarTable">
+                    <thead>
+                        <tr>
+                            <th>Mo</th>
+                            <th>Di</th>
+                            <th>Mi</th>
+                            <th>Do</th>
+                            <th>Fr</th>
+                            <th class="Sa">Sa</th>
+                            <th class="So">So</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calendarBody"></tbody>
+                </table>
             </div>
-            <table class="table">
-                <tr>
-                    <th>Mo</th>
-                    <th>Di</th>
-                    <th>Mi</th>
-                    <th>Do</th>
-                    <th>Fr</th>
-                    <th class="Sa">Sa</th>
-                    <th class="So">So</th>
-                </tr>
-            </table>
             <div class="text-column">
                 <h3 class="HE">Historische Ereignisse</h3>
                 <ul>

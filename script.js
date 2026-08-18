@@ -41,19 +41,72 @@ document.title = `Kalender vom ${currentFullDate}`; //Der Titel (angezeigt im Br
 const headingH3 = document.querySelector('.HE');
 headingH3.textContent = (`Historische Ereignisse am ${currentDay + ". " + currentMonth}`);
 
-// German public holidays as "month-day" keys
-const feiertage = new Set([
-  "1-1",    // Neujahr
-  "5-1",    // Tag der Arbeit
-  "10-3",   // Tag der Deutschen Einheit
-  "12-25",  // 1. Weihnachtstag
-  "12-26", // 2. Weihnachtstag
-]);
+// Public holidays with a fixed date every year
+const festeFeiertage = {
+  "1-1":   "Neujahr",
+  "5-1":   "Tag der Arbeit",
+  "10-3":  "Tag der Deutschen Einheit",
+  "12-25": "1. Weihnachtstag",
+  "12-26": "2. Weihnachtstag",
+};
 
-// Checks whether a given date is in the holidays set
+// Builds the full set of holidays (fixed + movable) for a given year
+function getFeiertageForYear(year) {
+  const bewegliche = getBeweglicheFeiertage(year);
+  return new Set([...Object.keys(festeFeiertage), ...Object.keys(bewegliche)]);
+}
+
+// Checks whether a given date is a holiday
 function isFeiertag(d) {
+  const feiertage = getFeiertageForYear(d.getFullYear());
   const key = `${d.getMonth() + 1}-${d.getDate()}`;
   return feiertage.has(key);
+}
+
+// Returns the Date of Easter Sunday (Ostersonntag) for a given year
+function calculateEaster(year) {
+  const a = year % 19;
+  const b = Math.floor(year / 100);
+  const c = year % 100;
+  const d = Math.floor(b / 4);
+  const e = b % 4;
+  const f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3);
+  const h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4);
+  const k = c % 4;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const month = Math.floor((h + l - 7 * m + 114) / 31); // 3 = March, 4 = April
+  const day = ((h + l - 7 * m + 114) % 31) + 1;
+  return new Date(year, month - 1, day);
+}
+
+// Builds the movable holidays based on the date of Easter
+function getBeweglicheFeiertage(year) {
+  const ostersonntag = calculateEaster(year);
+  const addDays = (date, n) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + n);
+  const dateKey = (date) => `${date.getMonth() + 1}-${date.getDate()}`; // допоміжна функція для ключа
+
+  const karfreitag = addDays(ostersonntag, -2);
+  const ostermontag = addDays(ostersonntag, 1);
+  const christiHimmelfahrt = addDays(ostersonntag, 39);
+  const pfingstmontag = addDays(ostersonntag, 50);
+  const fronleichnam = addDays(ostersonntag, 60);
+
+  return {
+    [dateKey(karfreitag)]: "Karfreitag",
+    [dateKey(ostermontag)]: "Ostermontag",
+    [dateKey(christiHimmelfahrt)]: "Christi Himmelfahrt",
+    [dateKey(pfingstmontag)]: "Pfingstmontag",
+    [dateKey(fronleichnam)]: "Fronleichnam",
+  };
+}
+
+function getFeiertagName(d) {
+  const feiertage = { ...festeFeiertage, ...getBeweglicheFeiertage(d.getFullYear()) };
+  const key = `${d.getMonth() + 1}-${d.getDate()}`;
+  return feiertage[key];
 }
 
 const pointer = isFeiertag(today) ? "ein" : "kein";
@@ -84,7 +137,7 @@ const textSlots = {
 fillTextSlots(textSlots); 
 
 let newRow;
-const tbody = document.querySelector("table");
+const tbody = document.getElementById("calendarBody");
 let cellcounter = 1;
 
 
@@ -103,6 +156,7 @@ function drawRow() {
 function drawCell(i) {
   const numberMonth = state.month;
   const day = new Date(year, numberMonth, i);
+  const feiertagName = getFeiertagName(day);
   const newCell = document.createElement("td");
   newCell.textContent = i;
   if (Number(currentDay) === i) {
@@ -113,6 +167,12 @@ function drawCell(i) {
   } 
   if (cellcounter % 7 === 6 ) {
     newCell.classList.add('Sa');
+  }
+  if (feiertagName) {
+    const nameSpan = document.createElement('span');
+    nameSpan.classList.add('feiertag-name');
+    nameSpan.textContent = feiertagName;
+    newCell.appendChild(nameSpan);
   }
   newRow.appendChild(newCell);
   cellcounter++;
@@ -146,7 +206,7 @@ function renderNextMonthLead(quantityDaysPrevMonth) {
 }
 
 function renderCalender() {
-  const tbody = document.querySelector("table");
+  const tbody = document.getElementById("calendarBody");
   tbody.innerHTML = "";
   cellcounter = 1;
   const year = state.year;
@@ -166,6 +226,31 @@ function renderCalender() {
 }
 
 renderCalender();
+
+let selectedCell = null
+
+const calendarBody = document.getElementById("calendarBody");
+calendarBody.addEventListener("click", (e) => {
+  const clickedCell = e.target.closest('td');
+  if(!clickedCell) return;
+  if(clickedCell === selectedCell) {
+    selectedCell.classList.remove('selected');
+    selectedCell = null;
+    return;
+  }
+  if (selectedCell === null){
+    if(e.target.closest('td')){
+    selectedCell = e.target.closest('td');
+    selectedCell.classList.add('selected');
+    } 
+  }
+  if (selectedCell != null) {
+    selectedCell.classList.remove('selected');
+    selectedCell = e.target.closest('td');
+    selectedCell.classList.add('selected');
+  }
+  
+});
 
 prev.addEventListener("click", () => { shift(-1); });
 next.addEventListener("click", () => { shift(1); });
