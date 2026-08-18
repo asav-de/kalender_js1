@@ -1,12 +1,24 @@
 const today = new Date();
 
+
+
+
+function shift(delta) {
+  const d = new Date(state.year, state.month + delta);
+  state.year = d.getFullYear();
+  state.month = d.getMonth();
+  renderCalender();
+}
+
+const state = {
+  year:  today.getFullYear(),
+  month: today.getMonth(),
+};
+
+
 // Date parts used to build the calendar grid
-const year = today.getFullYear();
-const numberMonth = today.getMonth();
-const numberDay = new Date(year, numberMonth, 1).getDay();
-const quantityDaysMonthTotal = new Date(year, numberMonth + 1, 0).getDate();
-const quantityDaysPrevMonth = new Date(year, numberMonth, 0).getDate();
-const nextMidnight = new Date(year, numberMonth, today.getDate() + 1);
+const year = state.year;
+const nextMidnight = new Date(state.year, state.month, today.getDate() + 1);
 const mSecondUntilNextDay = nextMidnight - today;
 
 // Reload the page at midnight so the calendar updates to the new day
@@ -22,8 +34,10 @@ const numberWeekdayOfMonth = Math.ceil(today.getDate() / 7);
 
 
 const headingH1 = document.querySelector('.titel');
+
 headingH1.innerHTML = `Kalenderblatt vom <wbr><span class="datum-nowrap">${currentFullDate}</span>`;
 document.title = `Kalender vom ${currentFullDate}`; //Der Titel (angezeigt im Browser-Tab)
+
 const headingH3 = document.querySelector('.HE');
 headingH3.textContent = (`Historische Ereignisse am ${currentDay + ". " + currentMonth}`);
 
@@ -70,43 +84,42 @@ const textSlots = {
 fillTextSlots(textSlots); 
 
 let newRow;
-const table = document.querySelector("table");
-let firstVisibleDayPrevMonth = quantityDaysPrevMonth;
-firstVisibleDayPrevMonth -= (numberDay + 5) % 7;
+const tbody = document.querySelector("table");
+let cellcounter = 1;
+
 
 // True at the start of each new week (every 7th cell)
 function isNewRowNeeded() {
-  return (cellCounter - 1) % 7 === 0;
+  return (cellcounter - 1) % 7 === 0;
 }
 
 // Creates a new table row and appends it to the table
 function drawRow() {
     newRow = document.createElement("tr");
-    table.appendChild(newRow);
+    tbody.appendChild(newRow);
 }
-
-let cellCounter = 1;
 
 // Creates a single day cell and appends it to the current row
 function drawCell(i) {
+  const numberMonth = state.month;
   const day = new Date(year, numberMonth, i);
   const newCell = document.createElement("td");
   newCell.textContent = i;
   if (Number(currentDay) === i) {
   newCell.classList.add('today');
   }
-  if ((cellCounter % 7 === 0) || (isFeiertag(day))) {
+  if ((cellcounter % 7 === 0) || (isFeiertag(day))) {
     newCell.classList.add('So');
   } 
-  if (cellCounter % 7 === 6 ) {
+  if (cellcounter % 7 === 6 ) {
     newCell.classList.add('Sa');
   }
   newRow.appendChild(newCell);
-  cellCounter++;
+  cellcounter++;
 }
 
 // Renders trailing days from the previous month
-function renderPrevMonthTail() {
+function renderPrevMonthTail(firstVisibleDayPrevMonth, quantityDaysPrevMonth) {
   for (let i = firstVisibleDayPrevMonth; i <= quantityDaysPrevMonth; i++) {
     if (isNewRowNeeded()) {
       drawRow();               
@@ -116,7 +129,7 @@ function renderPrevMonthTail() {
 }
 
 // Renders all days of the current month
-function renderCurrentMonth() {
+function renderCurrentMonth(quantityDaysMonthTotal) {
   for (let i = 1; i <= quantityDaysMonthTotal; i++) {
   if (isNewRowNeeded()) {
     drawRow();               
@@ -126,19 +139,36 @@ function renderCurrentMonth() {
 }
 
 // Renders leading days from the next month to fill the last row
-function renderNextMonthLead() {
+function renderNextMonthLead(quantityDaysPrevMonth) {
   for (let i = 1; (!isNewRowNeeded()); i++) {             
   drawCell(i);
   }
 }
 
 function renderCalender() {
-  renderPrevMonthTail();
-  renderCurrentMonth();
-  renderNextMonthLead();
+  const tbody = document.querySelector("table");
+  tbody.innerHTML = "";
+  cellcounter = 1;
+  const year = state.year;
+  const numberDay = new Date(year, state.month, 1).getDay();
+  const quantityDaysMonthTotal = new Date(year, state.month + 1, 0).getDate();
+  const quantityDaysPrevMonth = new Date(year, state.month, 0).getDate();
+  let firstVisibleDayPrevMonth = quantityDaysPrevMonth;
+  firstVisibleDayPrevMonth -= (numberDay + 5) % 7;
+
+  const headingH2 = document.querySelector('.currentMonth');
+  const monthName = new Date(state.year, state.month).toLocaleString("de", { month: "long" });
+  headingH2.textContent = (`${monthName}`);
+
+  renderPrevMonthTail(firstVisibleDayPrevMonth, quantityDaysPrevMonth);
+  renderCurrentMonth(quantityDaysMonthTotal);
+  renderNextMonthLead(quantityDaysPrevMonth);
 }
 
 renderCalender();
+
+prev.addEventListener("click", () => { shift(-1); });
+next.addEventListener("click", () => { shift(1); });
 
 // Fetches today's historical events from https://history.muffinlabs.com/
 async function ladeHistorischeEreignisse() {
