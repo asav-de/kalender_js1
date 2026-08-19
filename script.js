@@ -4,6 +4,7 @@ function shift(delta) {
   const d = new Date(state.year, state.month + delta);
   state.year = d.getFullYear();
   state.month = d.getMonth();
+  renderHeading();
   renderCalender();
 }
 
@@ -22,19 +23,19 @@ setTimeout(() => {
   location.reload();
 }, mSecondUntilNextDay);
 
-function renderHeading() {
+function renderHeading(headingDate = new Date(state.year, state.month, 1)) {
   const currentFullDate = today.toLocaleDateString("de", { day: "numeric", month: "long", year: "numeric" });
-  const currentMonth = today.toLocaleString("de", {month: "long" });
+  const currentMonth = headingDate.toLocaleString("de", {month: "long" });
   const currentWeekday = today.toLocaleString("de", {weekday: "long" });
   const numberWeekdayOfMonth = Math.ceil(today.getDate() / 7);
-  
+
   const headingH1 = document.querySelector('.titel');
   headingH1.innerHTML = `Kalenderblatt vom <wbr><span class="datum-nowrap">${currentFullDate}</span>`;
   document.title = `Kalender vom ${currentFullDate}`; //Der Titel (angezeigt im Browser-Tab)
-  
+
   const headingH2 = document.querySelector('.currentMonth');
   headingH2.textContent = (`${currentMonth}`);
-  
+
   const pointer = isFeiertag(today) ? "ein" : "kein";
 
   const textSlots = {
@@ -42,10 +43,10 @@ function renderHeading() {
   currentWeekday: currentWeekday,
   numberWeekdayOfMonth: numberWeekdayOfMonth,
   currentMonth: currentMonth,
-  currentYear: state.year,
+  currentYear: headingDate.getFullYear(),
   pointer: pointer
 }
-  fillHeading(textSlots); 
+  fillHeading(textSlots);
 }
 
 // Public holidays with a fixed date every year
@@ -209,8 +210,6 @@ function renderCalender() {
   let firstVisibleDayPrevMonth = quantityDaysPrevMonth;
   firstVisibleDayPrevMonth -= (numberDay + 5) % 7;
 
-
-
   renderPrevMonthTail(firstVisibleDayPrevMonth, quantityDaysPrevMonth);
   renderCurrentMonth(quantityDaysMonthTotal);
   renderNextMonthLead(quantityDaysPrevMonth);
@@ -229,7 +228,7 @@ function eventListener() {
     }
     if (selectedCell === null){
       selectedCell = e.target.closest('td');
-      selectedCell.classList.add('selected');  
+      selectedCell.classList.add('selected');
     }
     if (selectedCell != null) {
       selectedCell.classList.remove('selected');
@@ -239,7 +238,7 @@ function eventListener() {
       let month = Number(selectedCell.dataset.month);
       let selectedMonthDate = new Date(state.year, month, day);
       today = selectedMonthDate;
-      renderHeading();
+      renderHeading(selectedMonthDate);
       renderHistorischeEreignisse();
     }
   });
