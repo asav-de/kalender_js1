@@ -13,7 +13,7 @@ html {
 
 body {
   background-color: rgba(240, 250, 247, 0.4);
-  width: min(960px, 100%);
+  width: min(860px, 100%);
   margin: auto;
   border-radius: 15px;
   font-family: Georgia, 'Times New Roman', serif;
@@ -22,13 +22,11 @@ body {
 
 @media (max-width: 1000px) {
   body {
-    max-width: 700px;
-    min-width: 700px;
-    min-height: 700px;  /* kleinere feste Breite für schmalere Fenster */
+    max-width: 600px;
+    min-width: 600px;
+    min-height: 600px;  /* kleinere feste Breite für schmalere Fenster */
   }
   table { height: 400px; }
-
-
 }
 
 @media (max-width: 750px) {
@@ -42,7 +40,9 @@ body {
     flex-direction: column;
     align-items: center;
   }
-  table { height: 320px; }
+  table { 
+    height: 320px; 
+  }
   .text-column {
   margin-right: 20px;
   }
@@ -79,29 +79,35 @@ p.description {
   position: relative;
 }
 
+.calendar-frame {
+  width: 80%;
+  min-width: 350px;
+}
+
 table {
   font-size: x-large;
   text-align: center;
   table-layout: fixed; /* Forces equal column widths instead of sizing by content */
-  width: 80%;
+  width: 100%;
   aspect-ratio: 7 / 6;
-  flex-shrink: 0; 
+  flex-shrink: 0;
   border: 1px solid rgba(230, 170, 130, 0.5);
   background-color: rgba(255, 255, 255, 0.75);
   border-radius: 3%;
-  min-width: 350px;
 }
 
 td, th {
   height: auto;
   padding: 4px 0;
-  border: 1px solid transparent;    
+  border: 1px solid transparent;
   border-bottom: 1px solid rgba(90, 70, 60, 0.25);
   text-align: center;
   transition: background-color 0.2s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-td:hover, th:hover {
+td:hover, th:hover, .selected {
   background-color: rgba(255, 170, 100, 0.55);
   position: relative;
   border: 1px solid rgba(255, 170, 100, 0.8);
@@ -132,7 +138,7 @@ tr:last-child td {
 
 
 .text-column h3{
-  text-indent: 2em;
+  
   text-align: center;
 }
 
@@ -142,4 +148,54 @@ tr:last-child td {
 
 .text-column li {
   font-size: x-large;
+}
+
+.button {
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 2px 1px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  border-radius: 15px;
+}
+
+.button {
+  background-color: white; 
+  color: black; 
+  border: 1px solid rgba(230, 170, 130, 0.5);
+}
+
+.button:hover {
+  background-color: rgba(0, 200, 220, 0.75);
+  color: white;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.nav-btn {
+  font-size: 20px;
+  padding: 8px 14px;
+}
+
+.feiertag-name {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 1px;
+  font-size: 0.20em;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
 }
