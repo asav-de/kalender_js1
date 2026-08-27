@@ -154,7 +154,7 @@ function drawCell(i, numberMonth) {
   newCell.dataset.month = numberMonth;
   newCell.dataset.day = i;
   newCell.textContent = i;
-  if (Number(currentDay) === i) {
+  if (today.getDate() == day.getDate() && today.getMonth() == day.getMonth() && today.getFullYear() == day.getFullYear()) {
   newCell.classList.add('today');
   }
   if ((cellcounter % 7 === 0) || (isFeiertag(day))) {
